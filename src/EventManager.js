@@ -3,6 +3,7 @@ import { renderer, camera } from './SceneSetup.js';
 import { devices } from './DeviceManager.js'; // Import devices array
 import { connectDevices } from './ConnectionManager.js';
 import { updateConnectedLines } from './ConnectionManager.js';
+import { undoLastAction } from './ConnectionManager.js';
 
 let selectedDevice = null;
 let isDragging = false;
@@ -19,6 +20,11 @@ export function setupMouseEvents() {
         if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
             console.log("Shift key down detected");
             shiftPressed = true;
+        }
+
+        if (event.ctrlKey && event.code === 'KeyZ') {
+            console.log('Ctrl+Z detected, undoing last action.');
+            undoLastAction();
         }
     });
 

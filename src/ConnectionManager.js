@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { scene } from './SceneSetup.js';
 
 const lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+const undoStack = []; // Stack to store undo actions
 
 export function connectDevices(device1, device2) {
     if (!device1 || !device2) {
@@ -24,6 +25,14 @@ export function connectDevices(device1, device2) {
     device2.connectedLines = device2.connectedLines || [];
     device1.connectedLines.push({ line, connectedDevice: device2 });
     device2.connectedLines.push({ line, connectedDevice: device1 });
+
+    // Push the connection to the undo stack
+    undoStack.push({
+        action: 'connect',
+        device1,
+        device2,
+        line
+    });
 }
 
 export function updateConnectedLines(device) {
@@ -43,4 +52,27 @@ export function updateConnectedLines(device) {
 
         line.geometry.attributes.position.needsUpdate = true;
     });
+}
+
+export function undoLastAction() {
+    if (undoStack.length === 0) {
+        console.log('No actions to undo.');
+        return;
+    }
+
+    const lastAction = undoStack.pop();
+
+    if (lastAction.action === 'connect') {
+        const { device1, device2, line } = lastAction;
+
+        // Remove the line from the scene
+        scene.remove(line);
+
+        // Remove references from the devices
+        device1.connectedLines = device1.connectedLines.filter(conn => conn.line !== line);
+        device2.connectedLines = device2.connectedLines.filter(conn => conn.line !== line);
+
+        console.log(`Undo connection between ${device1.name} and ${device2.name}`);
+    }
+    // You can add more actions here in the future
 }
