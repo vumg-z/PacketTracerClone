@@ -1,9 +1,8 @@
 import * as THREE from 'three';
 import { renderer, camera } from './SceneSetup.js';
-import { devices } from './DeviceManager.js';
+import { devices } from './DeviceManager.js'; // Import devices array
 import { connectDevices } from './ConnectionManager.js';
 import { updateConnectedLines } from './ConnectionManager.js';
-
 
 let selectedDevice = null;
 let isDragging = false;
@@ -51,7 +50,7 @@ function handleMouseDown(event, raycaster, mouse, lineMaterial) {
     mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
     raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(devices);
+    const intersects = raycaster.intersectObjects(devices.map(d => d.device)); // Access devices array
 
     if (intersects.length > 0) {
         const intersectedDevice = intersects[0].object;
@@ -87,7 +86,7 @@ function handleMouseMove(event, raycaster, mouse) {
     mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
     raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(devices);
+    const intersects = raycaster.intersectObjects(devices.map(d => d.device)); // Access devices array
 
     if (shiftPressed && selectedDevice && intersects.length > 0) {
         const intersectedDevice = intersects[0].object;
@@ -111,11 +110,17 @@ function handleMouseMove(event, raycaster, mouse) {
 
         if (raycaster.ray.intersectPlane(dragPlane, intersectionPoint)) {
             selectedDevice.position.copy(intersectionPoint);
+
+            // Update the sprite position along with the device
+            const deviceData = devices.find(d => d.device === selectedDevice);
+            if (deviceData) {
+                deviceData.textLabel.position.copy(intersectionPoint).add(new THREE.Vector3(0, 1, 0)); // Position above the device
+            }
+
             updateConnectedLines(selectedDevice); // Update connected lines when moving
         }
     }
 }
-
 
 function handleMouseUp() {
     if (selectedDevice) {

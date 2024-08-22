@@ -58,7 +58,7 @@ function addDevice(name, x, y) {
     scene.add(textLabel);
 
     scene.add(device);
-    devices.push(device);
+    devices.push({ device, textLabel }); // Store the device and its label together
 
     console.log(`${name} added to the scene.`);
 }
