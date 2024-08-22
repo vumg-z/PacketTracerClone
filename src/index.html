@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packet Tracer Clone</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        #sidebar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 200px;
+            background-color: #2c3e50;
+            height: 100%;
+            color: white;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #canvas-container {
+            position: absolute;
+            left: 200px;
+            top: 0;
+            right: 0;
+            bottom: 0;
+        }
+        .device {
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <div id="host1" class="device">Host 1</div>
+        <div id="switch" class="device">Switch</div>
+        <div id="router1" class="device">Router 1</div>
+        <div id="host2" class="device">Host 2</div>
+    </div>
+    <div id="canvas-container"></div>
+    <script src="../dist/bundle.js"></script>
+    
+
+</body>
+</html>
